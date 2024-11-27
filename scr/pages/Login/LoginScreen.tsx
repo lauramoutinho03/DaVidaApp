@@ -10,41 +10,58 @@ import { Button } from '../../components/Button';
 import { Input } from '../../components/input';
 
 import { styles } from './styles';
-import { useSQLiteContext } from 'expo-sqlite';
+
+import { useUser } from '../../contexts/UserContext';
+//import { useSQLiteContext } from 'expo-sqlite';
+//import api from '../../api/api';
 
 type LoginScreenProps = StackScreenProps<RootStackParamList, 'Login'>;
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+    const { setUser } = useUser();
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(true);
     const [loading, setLoading] = useState(false);
 
-    const db = useSQLiteContext();
+    //const db = useSQLiteContext();
 
     // function to handle login
-    const handleLogin = async() => {
-        if(email.length === 0 || password.length === 0){
+    const handleLogin = async () => {
+        if (email.length === 0 || password.length === 0) {
             Alert.alert('Atenção', 'Por favor, preencha os campos obrigatórios!');
             return;
         }
+    
+        setLoading(true);
+    
         try {
-            const user = await db.getFirstAsync('SELECT * FROM users WHERE email = ?', [email]);
-            if (!user){
-                Alert.alert('Erro', 'Email não existe!');
-                return;
-            }
-            const validUser = await db.getFirstAsync('SELECT * FROM users WHERE email = ? AND password = ?', [email, password]);
-            if (validUser) {
+            const response = await fetch('https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/login/login?Email=' + email + '&Password=' + password, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password })
+            });
+    
+            const data = await response.json();
+            if (response.ok) {
+                setUser(data);
                 Alert.alert('Sucesso', 'Login efetuado com sucesso!');
-                navigation.navigate('Home', {user: email});
+                navigation.navigate('Home');
+                //navigation.navigate('Home', { user: data });
             } else {
-                Alert.alert('Erro', 'Password incorreta.');
+                Alert.alert('Erro', 'Login falhou! Verifique as suas credenciais.');
             }
         } catch (error) {
-            console.log('Erro durante o login : ', error);
+            console.error('Erro durante o login:', error);
+            Alert.alert('Erro', error.message || 'Algo deu errado. Tente novamente.');
+        } finally {
+            setLoading(false);
         }
-    }
+    };
+    
 
 
     return (

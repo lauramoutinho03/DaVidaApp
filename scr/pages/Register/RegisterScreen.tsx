@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
-import { useSQLiteContext } from 'expo-sqlite';
+//import { useSQLiteContext } from 'expo-sqlite';
 import { RootStackParamList } from '../../../types';
 
 import { styles } from './styles';
@@ -33,7 +33,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
     const [showPassword, setShowPassword] = useState(true);
     const [loading, setLoading] = useState(false);
 
-    const db = useSQLiteContext();
+    //const db = useSQLiteContext();
 
     // function to handle registration
     const handleRegister = async() => {
@@ -45,20 +45,38 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
             Alert.alert('Erro', 'As passwords não coincidem!');
             return;
         }
-        try {
-            const existingUser = await db.getFirstAsync('SELECT * FROM users WHERE email = ?', [email]);
-            if (existingUser) {
-                Alert.alert('Erro', 'Email já registado.');
-                return;
-            }
+        // https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/register/register?Nome={Nome}&Email={Email}&Password={Password}
 
-            await db.runAsync('INSERT INTO users (nome, email, password) VALUES (?, ?, ?)', [nome, email, password]);
-            Alert.alert('Sucesso', 'Registo efetuado com sucesso!');
-            navigation.navigate('Home', {user: email});
+        setLoading(true);
+
+        try {
+            const response = await fetch('https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/register/register?Nome=' + nome + '&Email=' + email + '&Password=' + password, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nome, email, password })
+            });
+            
+            // Obtém a resposta como texto
+            const responseText = await response.text(); 
+
+            // Verifica a resposta para 'sucesso' ou 'erro'
+            if (responseText.toLowerCase() === 'sucesso') {
+                Alert.alert('Sucesso', 'Registo efetuado com sucesso!');
+                navigation.navigate('Login'); // Navega para a tela de login
+            } else if (responseText.toLowerCase() === 'erro') {
+                Alert.alert('Erro', 'O email já está registado.');
+            } else {
+                Alert.alert('Erro', 'Ocorreu um problema ao registar-se. Tente novamente mais tarde.');
+            }
         } catch (error) {
-            console.log('Erro durante o registo : ', error);
+        console.error('Erro durante o registo: ', error);
+        Alert.alert('Erro', 'Ocorreu um problema. Por favor, tente novamente.');
+        } finally {
+        setLoading(false);
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -112,6 +130,10 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
                     <Button text="Registar" loading={loading} onPress={handleRegister}/>
                 </View>
             </View>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.textBottom}>Já tem conta? <Text style={{fontWeight: 'bold'}}>Entrar</Text></Text>
+            </TouchableOpacity>
         
         </View>
   );

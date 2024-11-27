@@ -36,5 +36,10 @@ export const styles = StyleSheet.create({
         //paddingVertical: 10,
         //justifyContent: 'flex-end',
     },
+    textBottom: {
+        fontSize: 16,
+        color: themes.colors.white,
+        paddingTop: 20
+    },
 
 })
