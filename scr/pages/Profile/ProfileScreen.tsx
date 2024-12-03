@@ -13,6 +13,7 @@ type ProfileScreenProps = StackScreenProps<RootStackParamList, 'Home'>;
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ route, navigation }) => {
   //const { user } = route.params;
   const { user, setUser, clearUser } = useUser();
+  const { Dador, Genero, Distrito, TipoSangue } = user;
 
   return (
     <View style={styles.container}>
@@ -24,31 +25,31 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ route, navigation }) => {
 
         <View style={styles.infoContainer}>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Nome:</Text> {user.Nome}
+                <Text style={{ fontWeight: 'bold' }}>Nome:</Text> {Dador.Nome}
             </Text>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Género:</Text> {user.Nome}
+                <Text style={{ fontWeight: 'bold' }}>Género:</Text> {Genero.Label}
             </Text>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Data de Nascimento:</Text> {user.Nome}
+                <Text style={{ fontWeight: 'bold' }}>Data de Nascimento:</Text> {Dador.DataNascimento}
             </Text>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>NIF:</Text> {user.Nome}
+                <Text style={{ fontWeight: 'bold' }}>NIF:</Text> {Dador.NIF}
             </Text>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Nº utente:</Text> {user.Nome}
+                <Text style={{ fontWeight: 'bold' }}>Nº utente:</Text> {Dador.NumUtente}
             </Text>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Distrito:</Text> {user.Nome}
+                <Text style={{ fontWeight: 'bold' }}>Distrito:</Text> {Distrito.Label}
             </Text>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Tipo sanguíneo:</Text> {user.Nome}
+                <Text style={{ fontWeight: 'bold' }}>Tipo sanguíneo:</Text> {TipoSangue.Label}
             </Text>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Email:</Text> {user.Email}
+                <Text style={{ fontWeight: 'bold' }}>Email:</Text> {Dador.Email}
             </Text>
             <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Telefone:</Text> {user.Nome}
+                <Text style={{ fontWeight: 'bold' }}>Telefone:</Text> {Dador.Telefone}
             </Text>
 
             <View style={styles.boxBottom}>

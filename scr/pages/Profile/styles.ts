@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   infoContainer: {
-      backgroundColor: themes.colors.evenLighterGrey,
+      backgroundColor: themes.colors.white,
       flex: 1,
       padding: 16,
       borderRadius: 8,

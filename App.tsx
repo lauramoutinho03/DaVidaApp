@@ -18,6 +18,7 @@ import HistoryScreen from './scr/pages/History/HistoryScreen';
 import FAQScreen from './scr/pages/FAQ/FAQScreen';
 import NotificationsScreen from './scr/pages/Notifications/NotificationsScreen';
 import CampaignsScreen from './scr/pages/Campaigns/CampaignsScreen';
+import DetailsScreen from './scr/pages/Details/DetailsScreen';
 
 /* // initialize the database
 const initializeDatabase = async(db: any) => {
@@ -114,6 +115,15 @@ export default function App() {
           <Stack.Screen name='Register' component={RegisterScreen} options={{ headerShown: false }}/>
           
           <Stack.Screen name='Home' component={HomeTabs} options={{ headerShown: false, headerLeft: () => null}}/>
+
+          <Stack.Screen name='Details' component={DetailsScreen}
+          options={{ headerShown: true, 
+            headerStyle: {
+              backgroundColor: themes.colors.darkRed,
+            },
+            headerTintColor: themes.colors.white,
+            headerTitle: 'Detalhes da Instituição',
+          }}/>
 
           <Stack.Screen name='FAQ' component={FAQScreen}
           options={{ headerShown: true, 

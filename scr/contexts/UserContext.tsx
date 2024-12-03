@@ -1,11 +1,46 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Definindo o tipo para os dados do usuário
-interface User {
+interface TipoSangue {
+  Id: number;
+  Label: string;
+  Order: number;
+  Is_Active: boolean;
+}
+
+interface Dador {
   IdDador: number;
   Email: string;
   Nome: string;
   Password: string;
+  DataNascimento: string;
+  Telefone: string;
+  NIF: string;
+  NumUtente: string;
+  GeneroId: number;
+  DistritoId: number;
+  TipoSangueId: number;
+}
+
+interface Genero {
+  Id: number;
+  Label: string;
+  Order: number;
+  Is_Active: boolean;
+}
+
+interface Distrito {
+  Id: number;
+  Label: string;
+  Order: number;
+  Is_Active: boolean;
+}
+
+interface User {
+  TipoSangue: TipoSangue;
+  Dador: Dador;
+  Genero: Genero;
+  Distrito: Distrito;
 }
 
 // Definindo o tipo para o contexto

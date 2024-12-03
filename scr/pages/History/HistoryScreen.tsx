@@ -11,10 +11,11 @@ type HistoryProps = StackScreenProps<RootStackParamList, 'Home'>;
 const HistoryScreen: React.FC<HistoryProps> = ({ route, navigation }) => {
   //const { user } = route.params;
   const { user, setUser, clearUser } = useUser();
+  const { Dador, Genero, Distrito, TipoSangue } = user;
 
   return (
     <View style={styles.container}>
-        <Text>Welcome to history, {user.Nome}!</Text>
+        <Text>Welcome to history, {Dador.Nome}!</Text>
 
     </View>
   );

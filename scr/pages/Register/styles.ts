@@ -41,5 +41,22 @@ export const styles = StyleSheet.create({
         color: themes.colors.white,
         paddingTop: 20
     },
+    picker: {
+        color: '#777777',
+        //fontSize: 16,
+        //paddingVertical: 10,
+    },
+    pickerContainer: {
+        width: '100%',
+        height: 47,
+        borderWidth: 2,
+        borderColor: themes.colors.darkRed,
+        borderRadius: 19,
+        marginTop: 10,
+        justifyContent: 'center',
+        backgroundColor: themes.colors.white,
+        
+        //paddingHorizontal: 10,
+    },
 
 })

@@ -11,10 +11,11 @@ type NotificationsScreenProps = StackScreenProps<RootStackParamList, 'Home'>;
 const NotificationsScreen: React.FC<NotificationsScreenProps> = ({ route, navigation }) => {
   //const { user } = route.params;
   const { user, setUser, clearUser } = useUser();
+  const { Dador, Genero, Distrito, TipoSangue } = user;
 
   return (
     <View style={styles.container}>
-        <Text>Welcome to notifications, {user.Nome}!</Text>
+        <Text>Welcome to notifications, {Dador.Nome}!</Text>
 
     </View>
   );
