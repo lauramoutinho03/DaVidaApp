@@ -19,6 +19,7 @@ interface InstituicaoData {
     Brigada: string;
     Local: string;
     DistritoId: number;
+    Horario: string;
     UserId: number;
   };
   Distrito: {

@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
   sairButton: {
     width: 100, 
     height: 30,
-    borderRadius: 10,
+    borderRadius: 40,
     backgroundColor: themes.colors.darkRed,
     alignItems: 'center',
     justifyContent: 'center',
@@ -28,8 +28,8 @@ export const styles = StyleSheet.create({
       flex: 1,
       padding: 16,
       borderRadius: 8,
-      marginBottom: 16,
-      marginTop: 100,
+      marginBottom: 20,
+      marginTop: 20,
       //position: "relative",
   },
   boxBottom: {
@@ -37,8 +37,8 @@ export const styles = StyleSheet.create({
     width: '100%',
     //backgroundColor: 'blue',
     alignItems: 'center',
-    paddingVertical: 10,
-    marginTop: 120
+    paddingVertical: 100,
+    marginTop: 50
     //justifyContent: 'flex-end',
     //paddingBottom: 115
   },

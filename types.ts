@@ -4,6 +4,7 @@ export interface InstituicaoData {
     Nome: string;
     Brigada: string;
     Local: string;
+    Horario: string;
     DistritoId: number;
     UserId: number;
   };

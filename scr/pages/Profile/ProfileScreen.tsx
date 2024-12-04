@@ -24,8 +24,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ route, navigation }) => {
 
 
         <View style={styles.infoContainer}>
-            <Text style={{ marginBottom: 10 }}>
-                <Text style={{ fontWeight: 'bold' }}>Nome:</Text> {Dador.Nome}
+            <Text style={{ marginBottom: 20, fontSize: 20 }}>
+                {Dador.Nome}
             </Text>
             <Text style={{ marginBottom: 10 }}>
                 <Text style={{ fontWeight: 'bold' }}>Género:</Text> {Genero.Label}
@@ -48,7 +48,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ route, navigation }) => {
             <Text style={{ marginBottom: 10 }}>
                 <Text style={{ fontWeight: 'bold' }}>Email:</Text> {Dador.Email}
             </Text>
-            <Text style={{ marginBottom: 10 }}>
+            <Text style={{ marginBottom: 0 }}>
                 <Text style={{ fontWeight: 'bold' }}>Telefone:</Text> {Dador.Telefone}
             </Text>
 
