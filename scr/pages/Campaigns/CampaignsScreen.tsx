@@ -6,7 +6,7 @@ import { RootStackParamList } from '../../../types';
 import { styles } from './styles';
 import { useUser } from '../../contexts/UserContext';
 
-type CampaignsProps = StackScreenProps<RootStackParamList, 'Home'>;
+type CampaignsProps = StackScreenProps<RootStackParamList, 'Campaigns'>;
 
 const CampaignsScreen: React.FC<CampaignsProps> = ({ route, navigation }) => {
   //const { user } = route.params;

@@ -9,7 +9,7 @@ import { ScrollView } from 'react-native';
 
 import { styles } from './styles';
 import Logo from '../../assets/logo_novo.png';
-import { MaterialIcons, Octicons } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome, Octicons } from '@expo/vector-icons';
 import { themes } from '../../global/themes';
 import { Input } from '../../components/input';
 import { Button } from '../../components/Button';
@@ -141,8 +141,8 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
                     <Input
                         value={dataNasc}
                         onChangeText={setDataNasc}
-                        IconRight={MaterialIcons}
-                        iconRightName="calendar-today"
+                        IconRight={FontAwesome}
+                        iconRightName="calendar"
                         placeholder="Data de Nascimento (YYYY-MM-DD)"
                         placeholderTextColor={themes.colors.placeholderColor}
                     />

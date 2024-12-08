@@ -111,6 +111,7 @@ export const styles = StyleSheet.create({
     color: '#555',
   },
   boxBottom: {
+    //backgroundColor: 'pink',
     marginTop: 16,
     alignItems: 'center',
   },

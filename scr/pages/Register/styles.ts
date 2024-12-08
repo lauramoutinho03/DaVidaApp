@@ -55,7 +55,6 @@ export const styles = StyleSheet.create({
         marginTop: 10,
         justifyContent: 'center',
         backgroundColor: themes.colors.white,
-        
         //paddingHorizontal: 10,
     },
 

@@ -19,6 +19,7 @@ import FAQScreen from './scr/pages/FAQ/FAQScreen';
 import NotificationsScreen from './scr/pages/Notifications/NotificationsScreen';
 import CampaignsScreen from './scr/pages/Campaigns/CampaignsScreen';
 import DetailsScreen from './scr/pages/Details/DetailsScreen';
+import AddDonationScreen from './scr/pages/AddDonation/AddDonationScreen';
 
 /* // initialize the database
 const initializeDatabase = async(db: any) => {
@@ -123,6 +124,15 @@ export default function App() {
             },
             headerTintColor: themes.colors.white,
             headerTitle: 'Detalhes da Instituição',
+          }}/>
+
+          <Stack.Screen name='AddDonation' component={AddDonationScreen}
+          options={{ headerShown: true, 
+            headerStyle: {
+              backgroundColor: themes.colors.darkRed,
+            },
+            headerTintColor: themes.colors.white,
+            headerTitle: 'Adicionar doação',
           }}/>
 
           <Stack.Screen name='FAQ' component={FAQScreen}

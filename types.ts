@@ -23,6 +23,7 @@ export type RootStackParamList = {
     FAQ: undefined;
     Campaigns: undefined;
     Details: { instituicao: InstituicaoData };
+    AddDonation: undefined;
     //Home: undefined;
   };
   
