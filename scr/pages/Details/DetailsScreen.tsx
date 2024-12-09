@@ -113,7 +113,7 @@ const DetailsScreen: React.FC<DetailsProps> = ({ route, navigation }) => {
         )}
 
         <View style={styles.legendaContainer}>
-          <MaterialIcons name="info-outline" size={24} color={themes.colors.black} />
+          <MaterialIcons name="info-outline" size={22} color={themes.colors.black} />
           <Text style={styles.legendaText}>(Quantos mais corações preenchidos menor é a necessidade)</Text>
         </View>
 

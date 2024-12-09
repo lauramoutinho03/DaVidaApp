@@ -2,7 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../types';
+import { MaterialIcons } from '@expo/vector-icons';
 
+import { themes } from '../../global/themes';
 import { styles } from './styles';
 import { useUser } from '../../contexts/UserContext';
 
@@ -14,7 +16,8 @@ const CampaignsScreen: React.FC<CampaignsProps> = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-        <Text>Welcome to Campanhas!</Text>
+      <MaterialIcons name="construction" size={100} color={themes.colors.black} />
+      <Text>Página das campanhas em construção</Text>
 
     </View>
   );

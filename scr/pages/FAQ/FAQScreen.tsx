@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert, Linking } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../types';
 
@@ -63,17 +63,37 @@ const FAQScreen: React.FC<FAQProps> = ({ route, navigation }) => {
     );
   }
 
+  const handleLinkPress = (link: string) => {
+    Alert.alert(
+      'Abrir link',
+      'Deseja abrir este link na internet?',
+      [
+        {
+          text: 'Cancelar',
+          onPress: () => console.log('Ação cancelada'),
+          style: 'cancel',
+        },
+        {
+          text: 'Abrir',
+          onPress: () => {
+            Linking.openURL(link).catch((err) => console.error('Erro ao abrir o link', err));
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   const renderFAQItem = ({ item }: { item: FAQ }) => (
     <View style={styles.faqItem}>
       <Text style={styles.faqTitle}>{item.Titulo}</Text>
       <Text style={styles.faqMessage}>{item.Mensagem}</Text>
-      <TouchableOpacity onPress={() => item.Link && alert(`Abrir link: ${item.Link}`)}>
+      {/* <TouchableOpacity onPress={() => item.Link && alert(`Abrir link: ${item.Link}`)}> */}
+      <TouchableOpacity onPress={() => item.Link && handleLinkPress(item.Link)}>
         <Text style={styles.faqLink}>Saiba mais</Text>
       </TouchableOpacity>
     </View>
   );
-
-  
 
   return (
     <View style={styles.container}>
