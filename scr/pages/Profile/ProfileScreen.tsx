@@ -19,7 +19,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ route, navigation }) => {
     <View style={styles.container}>
 
         <View style={styles.sairContainer}>
-            <Button text="Logout" onPress={() => navigation.navigate('Login')} style={styles.sairButton}/>
+            <Button text="Terminar sessão" onPress={() => navigation.navigate('Login')} style={styles.sairButton}/>
         </View>
 
 

@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     //justifyContent: 'center',
   },
   sairButton: {
-    width: 100, 
+    width: 150, 
     height: 30,
     borderRadius: 40,
     backgroundColor: themes.colors.darkRed,

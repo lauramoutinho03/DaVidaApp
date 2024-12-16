@@ -43,6 +43,7 @@ interface DistritoData {
 const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
   //const { user, setUser, clearUser } = useUser();
   //const { Dador, Genero, Distrito, TipoSangue } = user;
+  const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
   const [instituicoes, setInstituicoes] = useState<InstituicaoData[]>([]);
   const [filteredInstituicoes, setFilteredInstituicoes] = useState<InstituicaoData[]>([]);
@@ -159,57 +160,81 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       {/* Header com botões de notificações e informações */}
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('FAQ')} style={styles.buttonHeader}>
           <MaterialIcons name="help-outline" size={27} color={themes.colors.black} />
         </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[styles.toggleButtonLista, viewMode === 'list' && styles.toggleButtonActive,]}
+          onPress={() => setViewMode('list')}
+        >
+          <Text style={[styles.toggleButtonText, viewMode === 'list' && styles.toggleButtonTextActive,]}>
+            Lista
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.toggleButtonMapa, viewMode === 'map' && styles.toggleButtonActive,]}
+          onPress={() => setViewMode('map')}
+        >
+          <Text style={[styles.toggleButtonText, viewMode === 'map' && styles.toggleButtonTextActive,]}>
+            Mapa
+          </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => navigation.navigate('Campaigns')} style={styles.buttonHeader}>
           <FontAwesome5 name="newspaper" size={25} color={themes.colors.black} />
         </TouchableOpacity>
       </View>
 
-      {/* Filtros de cidade e data */}
-      <View style={styles.filterContainer}>
-
-        <View style={styles.picker}>
-          <Picker
-            selectedValue={selectedDistrito}
-            onValueChange={(itemValue) => setSelectedDistrito(itemValue)}
-          >
-            <Picker.Item label="Distrito" value="Distrito" style={styles.pickerText}/>
-            {distritos.map((distrito) => (
-              <Picker.Item key={distrito.Id} label={distrito.Label} value={distrito.Id.toString() } style={styles.pickerText}/>
-            ))}
-          </Picker>
-        </View>
-
-        <View style={styles.picker}>
-            <View style={styles.iconInput}>
-                    {/* <Text style={styles.pickerText}>{data || "Data"}</Text> */}
-                    <Text style={styles.pickerText}>{"Data"}</Text>
-                    <FontAwesome
-                        name='calendar'
-                        size={20}
-                        color={themes.colors.darkGrey}
-                    />
+      {viewMode === 'list' && (
+        <>
+          <View style={styles.filterContainer}>
+            <View style={styles.picker}>
+              <Picker
+                selectedValue={selectedDistrito}
+                onValueChange={(itemValue) => setSelectedDistrito(itemValue)}
+              >
+                <Picker.Item label="Distrito" value="Distrito" style={styles.pickerText} />
+                {distritos.map((distrito) => (
+                  <Picker.Item key={distrito.Id} label={distrito.Label} value={distrito.Id.toString()} style={styles.pickerText} />
+                ))}
+              </Picker>
             </View>
-        </View>
+            <View style={styles.picker}>
+              <View style={styles.iconInput}>
+                <Text style={styles.pickerText}>{"Data"}</Text>
+                <FontAwesome name="calendar" size={20} color={themes.colors.darkGrey} />
+              </View>
+            </View>
+          </View>
 
-      </View>
+          {filteredInstituicoes.length === 0 ? (
+            <View style={styles.emptyMessageContainer}>
+              <MaterialIcons name="info-outline" size={22} color={themes.colors.darkGrey} />
+              <Text style={styles.emptyMessage}>Não há instituições para o distrito selecionado.</Text>
+            </View>
+          ) : (
+            <FlatList
+              data={filteredInstituicoes}
+              keyExtractor={(item) => item.Instituicao.IdInstituicao.toString()}
+              renderItem={renderInstituicaoItem}
+              contentContainerStyle={styles.listContainer}
+            />
+          )}
+        </>
+      )}
 
-      {/* Lista de Instituições */}
-      {filteredInstituicoes.length === 0 ? (
-        <View style={styles.emptyMessageContainer}>
-          <MaterialIcons name="info-outline" size={22} color={themes.colors.darkGrey} />
-          <Text style={styles.emptyMessage}>Não há instituições para o distrito selecionado.</Text>
+      {viewMode === 'map' ? (
+        <View style={styles.mapPlaceholder}>
+          <MaterialIcons name="construction" size={100} color={themes.colors.black} />
+          <Text style={styles.mapPlaceholderText}>Mapa em construção</Text>
         </View>
       ) : (
-        <FlatList
-          data={filteredInstituicoes}
-          keyExtractor={(item) => item.Instituicao.IdInstituicao.toString()}
-          renderItem={renderInstituicaoItem}
-          contentContainerStyle={styles.listContainer}
-        />
+        <View>
+          {/* Lista ou mensagem de erro */}
+        </View>
       )}
 
       {/* Botão para realizar marcação */}

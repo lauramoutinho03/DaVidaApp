@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 16,
     //paddingVertical: 10,
     paddingHorizontal: 30,
@@ -38,15 +39,6 @@ export const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   instituicaoItem: {
-    // marginBottom: 16,
-    // padding: 16,
-    // backgroundColor: '#f9f9f9',
-    // borderRadius: 8,
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.1,
-    // shadowRadius: 4,
-    // elevation: 2,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -129,5 +121,51 @@ export const styles = StyleSheet.create({
     color: themes.colors.darkGrey,
     textAlign: 'center',
     marginVertical: 8,
+  },
+  mapPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mapPlaceholderText: {
+    fontSize: 16,
+    color: themes.colors.black,
+  }, 
+/*   toggleContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#E0E0E0', // Cor de fundo para todo o container
+    borderRadius: 20,          // Arredondamento do grupo
+    margin: 10,
+  }, */
+  toggleButtonActive: {
+    backgroundColor: themes.colors.darkGrey, // Cor do botão ativo
+  },
+  toggleButtonText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  toggleButtonTextActive: {
+    color: themes.colors.white, // Cor do texto do botão ativo
+  },
+  toggleButtonLista: {
+    flex: 1,                  
+    alignItems: 'center',     
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    marginLeft: 35,
+    backgroundColor: themes.colors.white,
+    height: 25,
+    justifyContent: 'center',
+  },
+  toggleButtonMapa: {
+    flex: 1,                  
+    alignItems: 'center',     
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    marginRight: 35,
+    backgroundColor: themes.colors.white,
+    height: 25,
+    justifyContent: 'center',
   },
 })

@@ -46,7 +46,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             });
     
             const data = await response.json();
-            if (response.ok) {
+            if (response.ok && data && Object.keys(data).length > 0) {
                 setUser(data);
                 Alert.alert('Sucesso', 'Login efetuado com sucesso!');
                 navigation.navigate('Home');
