@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, ScrollView, RefreshControl } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../types';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -44,54 +44,69 @@ const DetailsScreen: React.FC<DetailsProps> = ({ route, navigation }) => {
   const { instituicao } = route.params;
   const [stocks, setStocks] = useState<StockData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const fetchStocks = async () => {
+    try {
+      if (!refreshing) setLoading(true); // Só mostra o loader inicial se não estiver em refresh
+      const response = await fetch(
+        `https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/instituicao/getStocksByInstituicao?IdInstituicao=${instituicao.Instituicao.IdInstituicao}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const data = await response.json();
+      setStocks(data);
+    } catch (error) {
+      console.error('Erro ao buscar os níveis de stock:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false); // Encerra o pull-to-refresh
+    }
+  };
 
   useEffect(() => {
-    const fetchStocks = async () => {
-      try {
-        const response = await fetch(
-          `https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/instituicao/getStocksByInstituicao?IdInstituicao=${instituicao.Instituicao.IdInstituicao}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        const data = await response.json();
-        setStocks(data);
-      } catch (error) {
-        console.error('Erro ao buscar os níveis de stock:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchStocks();
   }, [instituicao]);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.infoContainer}>
+  // Função chamada ao puxar para atualizar
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchStocks();
+  };
 
+  return (
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <View style={styles.infoContainer}>
         <Text style={styles.title}>{instituicao.Instituicao.Nome}</Text>
         
         <Text style={styles.details}>
-            <Text style={{ fontWeight: 'bold' }}>Brigada:</Text> {instituicao.Instituicao.Brigada}
+          <Text style={{ fontWeight: 'bold' }}>Brigada:</Text> {instituicao.Instituicao.Brigada}
         </Text>
         
         <Text style={styles.details}>
-            <Text style={{ fontWeight: 'bold' }}>Local:</Text> {instituicao.Instituicao.Local}
+          <Text style={{ fontWeight: 'bold' }}>Local:</Text> {instituicao.Instituicao.Local}
         </Text>
 
         <Text style={styles.details}>
-            <Text style={{ fontWeight: 'bold' }}>Distrito:</Text> {instituicao.Distrito.Label}
+          <Text style={{ fontWeight: 'bold' }}>Distrito:</Text> {instituicao.Distrito.Label}
         </Text>
 
         <Text style={styles.details}>
-            <Text style={{ fontWeight: 'bold' }}>Horário:</Text> {instituicao.Instituicao.Horario}
+          <Text style={{ fontWeight: 'bold' }}>Horário:</Text> {instituicao.Instituicao.Horario}
         </Text>
 
         <Text style={styles.sectionTitle}>Níveis de necessidade por tipo sanguíneo:</Text>
         {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <View style={styles.niveisContainer}>
             {stocks.map((item) => {
@@ -100,7 +115,7 @@ const DetailsScreen: React.FC<DetailsProps> = ({ route, navigation }) => {
               const { Label } = item.TipoSangue;
 
               // Calcula o número de corações preenchidos (1 coração = 20%)
-              const nivel = Math.min(5, Math.floor(QuantidadeAtual / QuantidadeMinima));            ;
+              const nivel = Math.min(5, Math.floor(QuantidadeAtual / QuantidadeMinima));
 
               return (
                 <View key={Label} style={styles.nivelRow}>
@@ -114,12 +129,12 @@ const DetailsScreen: React.FC<DetailsProps> = ({ route, navigation }) => {
 
         <View style={styles.legendaContainer}>
           <MaterialIcons name="info-outline" size={22} color={themes.colors.black} />
-          <Text style={styles.legendaText}>(Quantos mais corações preenchidos menor é a necessidade)</Text>
+          <Text style={styles.legendaText}>
+            (Quantos mais corações preenchidos menor é a necessidade)
+          </Text>
         </View>
-
       </View>
-      
-    </View>
+    </ScrollView>
   );
 };
 
