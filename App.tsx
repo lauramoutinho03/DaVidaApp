@@ -92,6 +92,7 @@ const HomeTabs = () => (
       },
       headerTintColor: themes.colors.white,
       headerTitle: 'Notificações',
+      //tabBarBadge: 3,
     }}/>
     <Tab.Screen name="Profile" component={ProfileScreen} 
     options={{ headerShown: true, 

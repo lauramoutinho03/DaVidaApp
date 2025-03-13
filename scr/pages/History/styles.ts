@@ -3,10 +3,10 @@ import { themes } from "../../global/themes";
 
 export const styles = StyleSheet.create({
   container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: themes.colors.lightRed
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: themes.colors.lightRed
   },
   contagem: {
     flex: 3, // Área superior
@@ -15,27 +15,27 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   timerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
   },
   timerBox: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: themes.colors.white,
-      padding: 16,
-      marginHorizontal: 8,
-      borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: themes.colors.white,
+    padding: 16,
+    marginHorizontal: 8,
+    borderRadius: 8,
   },
   timerText: {
-      fontSize: 32,
-      fontWeight: 'bold',
-      color: themes.colors.black,
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: themes.colors.black,
   },
   timerLabel: {
-      fontSize: 14,
-      fontWeight: '600',
-      color: themes.colors.black,
+    fontSize: 14,
+    fontWeight: '600',
+    color: themes.colors.black,
   },
   title: {
     fontWeight: 'bold',
