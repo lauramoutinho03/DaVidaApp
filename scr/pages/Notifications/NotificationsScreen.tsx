@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, FlatList, ScrollView, RefreshControl } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../types';
 import { useFocusEffect } from '@react-navigation/native';
@@ -43,24 +43,30 @@ interface AlertaData {
   };
 }
 
-
 const NotificationsScreen: React.FC<NotificationsScreenProps> = ({ route, navigation }) => {
   //const { user } = route.params;
   const { user, setUser, clearUser } = useUser();
-  //const { Dador, Genero, Distrito, TipoSangue } = user;
+  const { Dador, Genero, Distrito, TipoSangue } = user;
 
   const [alertas, setAlertas] = useState<AlertaData[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
   const fetchAlertas = async () => {
     try {
-      setLoading(true);
+      if (!refreshing) setLoading(true);
+
       const response = await fetch(
-        'https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/alerta/getAlertas', 
-        { method: 'POST' }
-      );
+        `https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/alerta/getAlertas?DadorDistrito=${Dador.DistritoId}&DadorTipoSanguineo=${Dador.TipoSangueId}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+
       if (!response.ok) {
         throw new Error('Erro ao listar os alertas da API.');
       }
@@ -70,6 +76,7 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({ route, naviga
       setError(err.message);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -78,6 +85,11 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({ route, naviga
       fetchAlertas();
     }, [])
   );
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchAlertas();
+  };
 
   if (loading) {
     return (
@@ -108,14 +120,14 @@ const NotificationsScreen: React.FC<NotificationsScreenProps> = ({ route, naviga
     </View>
   );
 
-
   return (
     <View style={styles.container}>
       <FlatList
-        data={alertas}
-        keyExtractor={(item) => item.Alerta.IdAlerta.toString()}
-        renderItem={renderAlertaItem}
-        contentContainerStyle={styles.listContainer}
+      data={alertas}
+      keyExtractor={(item) => item.Alerta.IdAlerta.toString()}
+      renderItem={renderAlertaItem}
+      contentContainerStyle={styles.listContainer}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     </View>
   );
