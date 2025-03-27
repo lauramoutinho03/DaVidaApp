@@ -39,6 +39,23 @@ interface DistritoData {
   Is_Active: boolean;
 }
 
+interface HorarioData {
+  IdHorario: number,
+	DiaSemanaId: number,
+	HoraAbertura: string,
+	HoraFecho: string,
+	InstituicaoId: number
+}
+
+const diasSemana = [
+  { id: 1, label: 'Domingo' },
+  { id: 3, label: 'Segunda-feira' },
+  { id: 4, label: 'Terça-feira' },
+  { id: 5, label: 'Quarta-feira' },
+  { id: 7, label: 'Quinta-feira' },
+  { id: 6, label: 'Sexta-feira' },
+  { id: 2, label: 'Sábado' },
+];
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
   //const { user, setUser, clearUser } = useUser();
@@ -47,8 +64,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
 
   const [instituicoes, setInstituicoes] = useState<InstituicaoData[]>([]);
   const [filteredInstituicoes, setFilteredInstituicoes] = useState<InstituicaoData[]>([]);
+  
   const [distritos, setDistritos] = useState<DistritoData[]>([]);
   const [selectedDistrito, setSelectedDistrito] = useState<string | undefined>();
+
+  const [horarios, setHorarios] = useState<HorarioData[]>([]);
+  const [selectedDiaSemana, setSelectedDiaSemana] = useState(null);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -92,14 +113,30 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
     }
   };
 
+  const fetchHorarios = async () => {
+    try {
+      const response = await fetch('https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/instituicao/getHorario', 
+        { method: 'POST' }
+      );
+      
+      if (!response.ok) throw new Error('Erro ao listar os horários.');
+
+      const data: HorarioData[] = await response.json();
+      setHorarios(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       fetchInstituicoes();
       fetchDistritos();
+      fetchHorarios();
     }, [])
   );
 
-  // Atualiza as instituições filtradas sempre que o distrito ou as instituições mudam
+/*   // Atualiza as instituições filtradas sempre que o distrito ou as instituições mudam
   useEffect(() => {
     if (selectedDistrito && selectedDistrito !== "Distrito") {
       const filtered = instituicoes.filter(
@@ -109,7 +146,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
     } else {
       setFilteredInstituicoes(instituicoes); // Exibe todas as instituições se "Distrito" estiver selecionado
     }
-  }, [selectedDistrito, instituicoes]);
+  }, [selectedDistrito, instituicoes]); */
+
+  useEffect(() => {
+    let filtered = instituicoes;
+    if (selectedDistrito && selectedDistrito !== 'Distrito') {
+      filtered = filtered.filter(inst => inst.Instituicao.DistritoId.toString() === selectedDistrito);
+    }
+    if (selectedDiaSemana && selectedDiaSemana !== 'Dia Semana') {
+      const instituicoesComHorario = filtered.filter(inst => 
+        horarios.some(horario => horario.InstituicaoId === inst.Instituicao.IdInstituicao && horario.DiaSemanaId === selectedDiaSemana)
+      );
+      setFilteredInstituicoes(instituicoesComHorario);
+    } else {
+      setFilteredInstituicoes(filtered);
+    }
+  }, [selectedDistrito, selectedDiaSemana, instituicoes, horarios]);
 
   if (loading) {
     return (
@@ -203,17 +255,26 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
               </Picker>
             </View>
             <View style={styles.picker}>
-              <View style={styles.iconInput}>
+{/*               <View style={styles.iconInput}>
                 <Text style={styles.pickerText}>{"Data"}</Text>
                 <FontAwesome name="calendar" size={20} color={themes.colors.darkGrey} />
-              </View>
+              </View> */}
+              <Picker 
+                selectedValue={selectedDiaSemana} 
+                onValueChange={(itemValue) => setSelectedDiaSemana(itemValue)}
+              >
+                <Picker.Item label="Dia Semana" value="Dia Semana" style={styles.pickerText}/>
+                {diasSemana.map(d => (
+                  <Picker.Item key={d.id} label={d.label} value={d.id} style={styles.pickerText}/>
+                ))}
+              </Picker>
             </View>
           </View>
 
           {filteredInstituicoes.length === 0 ? (
             <View style={styles.emptyMessageContainer}>
               <MaterialIcons name="info-outline" size={22} color={themes.colors.darkGrey} />
-              <Text style={styles.emptyMessage}>Não há instituições para o distrito selecionado.</Text>
+              <Text style={styles.emptyMessage}>Não há instituições para o distrito ou dia da semana selecionado.</Text>
             </View>
           ) : (
             <FlatList

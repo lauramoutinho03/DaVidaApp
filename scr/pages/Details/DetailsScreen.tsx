@@ -22,6 +22,22 @@ interface StockData {
   };
 }
 
+interface HorarioData {
+  Horario: {
+    IdHorario: number,
+    DiaSemanaId: number,
+    HoraAbertura: string,
+    HoraFecho: string,
+    InstituicaoId: number
+  },
+  DiaSemana: {
+    Id: number,
+    Label: string,
+    Order: number,
+    Is_Active: boolean
+  }
+}
+
 const coracoes = (nivel: number) => {
   const total = 5;
   return (
@@ -38,11 +54,14 @@ const coracoes = (nivel: number) => {
   );
 };
 
+
 const DetailsScreen: React.FC<DetailsProps> = ({ route, navigation }) => {
   //const { user } = route.params;
   //const { user, setUser, clearUser } = useUser();
   const { instituicao } = route.params;
   const [stocks, setStocks] = useState<StockData[]>([]);
+  const [horarios, setHorarios] = useState<HorarioData[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
@@ -68,15 +87,63 @@ const DetailsScreen: React.FC<DetailsProps> = ({ route, navigation }) => {
     }
   };
 
+  const fetchHorarios = async () => {
+    try {
+      //if (!refreshing) setLoading(true); // Só mostra o loader inicial se não estiver em refresh
+      setLoading(true);
+      const response = await fetch(
+        `https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/instituicao/getHorarioByInstituicaoId?InstituicaoId=${instituicao.Instituicao.IdInstituicao}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const data = await response.json();
+      setHorarios(data);
+    } catch (error) {
+      console.error('Erro ao buscar os horários da instituição:', error);
+    } finally {
+      setLoading(false);
+      //setRefreshing(false); // Encerra o pull-to-refresh
+    }
+  };
+
   useEffect(() => {
     fetchStocks();
+    fetchHorarios();
   }, [instituicao]);
 
   // Função chamada ao puxar para atualizar
   const onRefresh = () => {
     setRefreshing(true);
     fetchStocks();
+    fetchHorarios();
   };
+
+  // Função para exibir o horário
+  const renderHorario = (horario: HorarioData) => {
+    const { Horario, DiaSemana  } = horario;
+     // Verifica se as horas de abertura e fechamento estão presentes
+    const horaAbertura = Horario.HoraAbertura || "0";
+    const horaFecho = Horario.HoraFecho || "0";
+
+    const horarioFormatado =
+    horaAbertura === "0" || horaFecho === "0"
+      ? "Sem horário"
+      : `${horaAbertura.split(":").slice(0, 2).join("h")} - ${horaFecho.split(":").slice(0, 2).join("h")}`;
+
+    return (
+      <View style={styles.horarioRow} key={DiaSemana.Id}>
+        <Text style={styles.diaSemanaText}>{DiaSemana.Label}</Text>
+        <Text style={styles.horaText}>
+          {horarioFormatado}
+        </Text>
+      </View>
+    );
+  };
+
 
   return (
     <ScrollView
@@ -100,9 +167,22 @@ const DetailsScreen: React.FC<DetailsProps> = ({ route, navigation }) => {
           <Text style={{ fontWeight: 'bold' }}>Distrito:</Text> {instituicao.Distrito.Label}
         </Text>
 
-        <Text style={styles.details}>
+{/*         <Text style={styles.details}>
           <Text style={{ fontWeight: 'bold' }}>Horário:</Text> {instituicao.Instituicao.Horario}
-        </Text>
+        </Text> */}
+
+        <Text style={styles.sectionTitle}>Horário de Funcionamento:</Text>
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <View style={styles.horariosContainer}>
+            {horarios&& horarios.length > 0 ? (
+              horarios.map((horario) => renderHorario(horario))
+            ) : (
+              <Text style={styles.noHorariosText}>Não há horários disponíveis.</Text>
+            )}
+          </View>
+        )}
 
         <Text style={styles.sectionTitle}>Níveis de necessidade por tipo sanguíneo:</Text>
         {loading ? (

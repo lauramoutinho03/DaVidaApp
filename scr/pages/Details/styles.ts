@@ -28,7 +28,14 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 17,
     fontWeight: 'bold',
-    marginVertical: 25,
+    //marginVertical: 10,
+    //marginTop: 5,
+    padding: 2,
+    marginBottom: 5,
+    //backgroundColor: themes.colors.lightGrey,
+    borderRadius: 8,
+    borderColor: themes.colors.lightGrey,
+    borderWidth: 1,
   },
   list: {
     paddingBottom: 10,
@@ -70,6 +77,40 @@ export const styles = StyleSheet.create({
       color: themes.colors.black,
       textAlign: "center",
       marginTop: 4,
+  },
+  horarioRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    //justifyContent: 'center',
+    marginBottom: 5,
+  },
+  // Estilo para o nome do dia da semana
+  diaSemanaText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: themes.colors.black,
+  },
+  // Estilo para o horário (hora de abertura e fechamento)
+  horaText: {
+    fontSize: 16,
+    color: themes.colors.black,
+  },
+  // Container que agrupa todos os horários
+  horariosContainer: {
+    //marginTop: 5,
+    paddingHorizontal: 40,
+    marginBottom: 5,
+    //backgroundColor: themes.colors.lightGrey,
+    //borderRadius: 8,
+    //borderWidth: 2,
+    //borderColor: themes.colors.darkRed,
+  },
+  // Texto exibido quando não há horários
+  noHorariosText: {
+    fontSize: 16,
+    color: themes.colors.black,
+    fontStyle: 'italic',
+    //marginTop: 10,
   },
 
 })
