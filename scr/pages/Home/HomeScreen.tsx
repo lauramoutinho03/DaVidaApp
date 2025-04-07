@@ -218,7 +218,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
           <MaterialIcons name="help-outline" size={27} color={themes.colors.black} />
         </TouchableOpacity>
         
-        <TouchableOpacity
+{/*         <TouchableOpacity
           style={[styles.toggleButtonLista, viewMode === 'list' && styles.toggleButtonActive,]}
           onPress={() => setViewMode('list')}
         >
@@ -233,7 +233,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ route, navigation }) => {
           <Text style={[styles.toggleButtonText, viewMode === 'map' && styles.toggleButtonTextActive,]}>
             Mapa
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity onPress={() => navigation.navigate('Campaigns')} style={styles.buttonHeader}>
           <FontAwesome5 name="newspaper" size={25} color={themes.colors.black} />

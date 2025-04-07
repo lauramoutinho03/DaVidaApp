@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert, Image} from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator, Alert, Image, ScrollView, RefreshControl} from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../types';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -27,6 +27,7 @@ const CampaignsScreen: React.FC<CampaignsProps> = ({ route, navigation }) => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const fetchCampanhas = async () => {
     try {
@@ -52,6 +53,14 @@ const CampaignsScreen: React.FC<CampaignsProps> = ({ route, navigation }) => {
   useEffect(() => {
     fetchCampanhas();
   }, []);
+
+  // Função chamada ao puxar para atualizar
+  const onRefresh = async () => {
+    setRefreshing(true); // Começa o refresh
+    await fetchCampanhas(); // Espera carregar os dados
+    setRefreshing(false); // Finaliza o refresh
+  };
+  
   
   const toggleExpand = (id: number) => {
     setExpandedCampaigns((prev) =>
@@ -109,18 +118,13 @@ const CampaignsScreen: React.FC<CampaignsProps> = ({ route, navigation }) => {
   }
 
   return (
-/*     <View style={styles.container}>
-      <MaterialIcons name="construction" size={100} color={themes.colors.black} />
-      <Text>Página das campanhas em construção</Text>
-
-    </View> */
-
     <View style={styles.container}>
       {campanhas.length > 0 ? (
         <FlatList
           data={campanhas}
           keyExtractor={(item) => item.IdCampanha.toString()}
           renderItem={renderCampaignItem}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         />
       ) : (
         <View style={styles.noDataContainer}>
