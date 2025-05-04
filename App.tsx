@@ -133,7 +133,7 @@ export default function App() {
               backgroundColor: themes.colors.darkRed,
             },
             headerTintColor: themes.colors.white,
-            headerTitle: 'Adicionar doação',
+            headerTitle: 'Registar doação',
           }}/>
 
           <Stack.Screen name='FAQ' component={FAQScreen}

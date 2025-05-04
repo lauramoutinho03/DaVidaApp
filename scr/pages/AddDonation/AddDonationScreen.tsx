@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../types';
-import { Picker } from '@react-native-picker/picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { FontAwesome } from '@expo/vector-icons';
+//import { Picker } from '@react-native-picker/picker';
+//import DateTimePicker from '@react-native-community/datetimepicker';
+import { MaterialIcons } from '@expo/vector-icons';
 
+import { themes } from '../../global/themes';
 import { styles } from './styles';
 import { useUser } from '../../contexts/UserContext';
 import { Button } from '../../components/Button';
+import { Input } from '../../components/input';
 
 type AddDonationScreenProps = StackScreenProps<RootStackParamList, 'AddDonation'>;
 
@@ -22,13 +24,18 @@ const AddDonationScreen: React.FC<AddDonationScreenProps> = ({ route, navigation
   const { user, setUser, clearUser } = useUser();
   const { Dador } = user;
 
-  const [institutions, setInstitutions] = useState<Institution[]>([]);
-  const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null);
-  const [date, setDate] = useState<Date>(new Date());
+  // const [institutions, setInstitutions] = useState<Institution[]>([]);
+  // const [selectedInstitution, setSelectedInstitution] = useState<number | null>(null);
+  // const [date, setDate] = useState<Date>(new Date());
   const [loading, setLoading] = useState<boolean>(false);
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  // const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
-  // Fetch institutions from API
+  const [codigo, setCodigo] = useState('');
+  // const [hasPermission, setHasPermission] = useState(null);
+  // const [scanned, setScanned] = useState(false);
+  // const [scannerVisible, setScannerVisible] = useState(false);
+
+/*   // Fetch institutions from API
   const fetchInstitutions = async () => {
     try {
       const response = await fetch(
@@ -54,14 +61,17 @@ const AddDonationScreen: React.FC<AddDonationScreenProps> = ({ route, navigation
       Alert.alert('Erro', 'Não foi possível carregar as instituições.');
       console.error(error);
     }
-  };
+  }; */
 
   useEffect(() => {
-    fetchInstitutions();
+/*     (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })(); */
   }, []);
 
   // Handle donation creation
-  const handleAddDonation = async () => {
+/*   const handleAddDonation = async () => {
     if (!selectedInstitution) {
       Alert.alert('Erro', 'Por favor, selecione uma instituição.');
       return;
@@ -87,6 +97,36 @@ const AddDonationScreen: React.FC<AddDonationScreenProps> = ({ route, navigation
     } finally {
       setLoading(false);
     }
+  }; */
+
+  const handleAddDonation = async () => {
+    if (!codigo.trim()) {
+      Alert.alert('Erro', 'Por favor, insira o código.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      // Substituir por chamada à API de validação do código
+      const response = await fetch(
+        `https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/doacao/createDoacao?Codigo=${codigo}&IdDador=${Dador.IdDador}`,
+        { method: 'POST' }
+      );
+
+      if (!response.ok) {
+        Alert.alert('Erro', 'Código incorreto.');
+        //throw new Error(`Erro ao registar doação: ${response.statusText}`);
+      } else {
+        Alert.alert('Sucesso', 'Doação registada com sucesso!');
+        navigation.goBack();
+      }
+
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível registar a doação.');
+      // console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -95,63 +135,29 @@ const AddDonationScreen: React.FC<AddDonationScreenProps> = ({ route, navigation
             
             <View style={styles.box}>
                 
-                <Text style={styles.label}>Selecione a instituição:</Text>
-                {/* Dropdown para selecionar instituição */}
-                <View style={styles.pickerContainer}>
-                    
-                    <Picker
-                        selectedValue={selectedInstitution}
-                        onValueChange={(itemValue) => setSelectedInstitution(Number(itemValue))}
-                    >
-                        {institutions.map((institution) => (
-                        <Picker.Item
-                            key={institution.IdInstituicao}
-                            label={institution.Nome}
-                            value={institution.IdInstituicao}
-                        />
-                        ))}
-                    </Picker>
-                </View>
+                <Text style={styles.label}>Realizou uma doação?</Text>
+                <Text style={styles.label}>Insira o código fornecido:</Text>
 
-                <Text style={styles.label}>Selecione a data da doação:</Text>
-                {/* Seletor de data */}
-                <View style={styles.datePickerContainer}>
-                    <TouchableOpacity 
-                        onPress={() => setShowDatePicker(true)} 
-                        style={styles.datePickerButton} // Botão com alinhamento horizontal
-                    >
-                        <Text style={styles.dateText}>{date.toDateString()}</Text>
-                        <FontAwesome name="calendar" size={24} color="black" style={styles.icon} />
-                    </TouchableOpacity>
-                    {showDatePicker && (
-                        <DateTimePicker
-                            value={date}
-                            mode="date"
-                            display={'default'}
-                            onChange={(_, selectedDate) => {
-                                if (selectedDate) {
-                                    setDate(selectedDate);
-                                }
-                                setShowDatePicker(false); // Fecha o seletor
-                            }}
-                        />
-                    )}
-                </View>
+                <Input 
+                  value={codigo}
+                  onChangeText={setCodigo}
+                  IconRight={MaterialIcons}
+                  iconRightName="qr-code-2"
+                  placeholder="Código"
+                  placeholderTextColor={themes.colors.placeholderColor}
+                />
 
                 {/* Botão para guardar doação */}
                 <View style={styles.buttonContainer}>
-                    <Button
-                        text={loading ? 'Guardando...' : 'Guardar doação'}
-                        onPress={handleAddDonation}
-                        disabled={loading}
+                <Button
+                    text={loading ? 'Registando...' : 'Registar'}
+                    onPress={handleAddDonation}
+                    disabled={loading}
                     />
                 </View>
 
             </View>
-{/* 
-            <View style={styles.boxBottom}>
-                <Button text="Guardar doação"/>
-            </View> */}
+
         </View>
     </View>
   );
