@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, Alert, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, Alert, TouchableOpacity, FlatList, ActivityIndicator, Modal, Pressable } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../types';
-import { FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { styles } from './styles';
@@ -25,7 +25,14 @@ interface DonationData {
     Local: string;
     Horario: string;
   };
-}
+}  
+
+const niveis = [
+    { nome: 'Iniciante', limite: 3 },
+    { nome: 'Solidário', limite: 6 },
+    { nome: 'Veterano', limite: 10 },
+    { nome: 'Lendário', limite: 20 },
+  ];
 
 const HistoryScreen: React.FC<HistoryProps> = ({ route, navigation }) => {
   //const { user } = route.params;
@@ -35,6 +42,7 @@ const HistoryScreen: React.FC<HistoryProps> = ({ route, navigation }) => {
   const [donations, setDonations] = useState<DonationData[]>([]);
   const [monthsRemaining, setMonthsRemaining] = useState<number>(0);
   const [daysRemaining, setDaysRemaining] = useState<number>(0);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const fetchDonations = async () => {
     try {
@@ -100,50 +108,6 @@ const HistoryScreen: React.FC<HistoryProps> = ({ route, navigation }) => {
     }
   };
 
-  const confirmDelete = (idDoacao: number) => {
-    Alert.alert(
-      'Confirmação',
-      'Tem a certeza de que deseja apagar esta doação?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Apagar',
-          style: 'destructive',
-          onPress: () => deleteDonation(idDoacao),
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const deleteDonation = async (idDoacao: number) => {
-    try {
-      const response = await fetch(
-        `https://personal-o5s345pu.outsystemscloud.com/DaVida/rest/doacao/deleteDoacao?idDoacao=${idDoacao}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Erro ao excluir a doação');
-      }
-
-      // Atualiza a lista de doações após a exclusão
-      setDonations((prevDonations) =>
-        prevDonations.filter((donation) => donation.Doacao.IdDoacao !== idDoacao)
-      );
-      Alert.alert('Sucesso', 'Doação excluída com sucesso!');
-      fetchDonations();
-    } catch (error) {
-      Alert.alert('Erro', 'Não foi possível excluir a doação. Tente novamente mais tarde.');
-      console.error(error);
-    }
-  };
-
   // Atualiza a página ao focar
   useFocusEffect(
     useCallback(() => {
@@ -161,24 +125,85 @@ const HistoryScreen: React.FC<HistoryProps> = ({ route, navigation }) => {
           <Text style={{ fontWeight: 'bold' }}>Data:</Text> {item.Doacao.DataDoacao || '----'}
         </Text>
       </View>
-      <TouchableOpacity onPress={() => confirmDelete(item.Doacao.IdDoacao)}>
-        <FontAwesome name="trash" size={25} color={themes.colors.black} />
-      </TouchableOpacity>
     </View>
   );
+
+  const renderProgress = () => {
+    const totalDoacoes = donations.length;
+  
+    const nivelAtual = niveis.find((nivel, index) =>
+      totalDoacoes < nivel.limite || index === niveis.length - 1
+    );
+  
+    const indexAtual = niveis.indexOf(nivelAtual);
+    const anteriorLimite = indexAtual === 0 ? 0 : niveis[indexAtual - 1].limite;
+    const progressoNivel = ((totalDoacoes - anteriorLimite) / (nivelAtual.limite - anteriorLimite)) * 100;
+
+    const doacoesRestantes = nivelAtual.limite - totalDoacoes;
+  
+    return (
+      <View style={styles.progressContainer}>
+        {/* <Text style={styles.title}>Progresso de Doações</Text> */}
+        <View style={styles.levelHeader}>
+          <Text style={styles.levelText}>Nível: {nivelAtual.nome}</Text>
+          <Pressable onPress={() => setModalVisible(true)} style={styles.buttonHeader}>
+            <MaterialIcons name="help-outline" size={20} style={{ color:themes.colors.black }} />
+          </Pressable>
+        </View>
+        <View style={styles.progressBarContainer}>
+          <View style={[styles.progressBar, { width: `${Math.min(progressoNivel, 100)}%` }]} />
+        </View>
+        {indexAtual === niveis.length - 1 ? (
+          <Text style={styles.progressText}>
+            {totalDoacoes} doações — Nível máximo atingido!
+          </Text>
+        ) : (
+          <Text style={styles.progressText}>
+            {totalDoacoes} doações — Faltam {nivelAtual.limite - totalDoacoes} para o próximo nível
+          </Text>
+        )}
+
+        <Modal
+          transparent={true}
+          visible={modalVisible}
+          animationType="fade"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Níveis de Dador</Text>
+              {niveis.map((nivel, index) => (
+                <Text key={index} style={styles.modalItem}>
+                  • {nivel.nome}: até {nivel.limite} doações
+                </Text>
+              ))}
+              <Pressable onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>Fechar</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    );
+  };
+  
 
   return (
     <View style={styles.container}>
         
         {/* Contagem */}
         <View style={styles.contagem}>
-            <Text style={styles.title}>{Dador.Nome}, pode doar novamente em: </Text>
+            <Text style={styles.title}>
+              {Dador.Nome}, {monthsRemaining === 0 && daysRemaining === 0 
+                ? 'já pode doar novamente!' 
+                : 'pode doar novamente em:'}
+            </Text>
             <View style={styles.timerContainer}>
                 <View style={styles.timerBox}>
                     <Text style={styles.timerText}>{monthsRemaining}</Text>
                     <Text style={styles.timerLabel}>meses</Text>
                 </View>
-                <Text style={styles.timerText}>e</Text>
+{/*                 <Text style={styles.timerText}>e</Text> */}
                 <View style={styles.timerBox}>
                     <Text style={styles.timerText}>{daysRemaining}</Text>
                     <Text style={styles.timerLabel}>dias</Text>
@@ -186,7 +211,7 @@ const HistoryScreen: React.FC<HistoryProps> = ({ route, navigation }) => {
             </View>
         </View>
         
-        {/* Histórico */}
+      {renderProgress()}
       {/* Histórico */}
       <View style={styles.historico}>
         <Text style={styles.title}>Histórico</Text>
@@ -197,7 +222,7 @@ const HistoryScreen: React.FC<HistoryProps> = ({ route, navigation }) => {
             data={donations}
             keyExtractor={(item) => item.Doacao.IdDoacao.toString()}
             renderItem={renderDonationItem}
-            ListEmptyComponent={<Text style={styles.listText}>Nenhuma doação encontrada.</Text>}
+            ListEmptyComponent={<Text style={styles.listText}>Nenhuma doação registada.</Text>}
           />
         )}
       </View>
