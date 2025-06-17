@@ -28,9 +28,11 @@
  Além disso, inclui uma barra de progresso que reflete o número total de doações, o nível atual do dador ("Iniciante", "Solidário",
  etc.) e quantas doações faltam para atingir o próximo nível. <br>
 - **Registo de doação de sangue:** Permite ao dador registar uma nova doação ao seu histórico, através da inserção do código fornecido pela instituição de saúde após a doação.
+
 ![image](https://github.com/user-attachments/assets/96aa9f1e-f44c-498c-9c11-5051cee3153e)
 
 - **Visualização de notificações/alertas:** acesso a alertas personalizados sobre as necessidades de sangue das instituições
  próximas do utilizador, que necessitem do seu tipo sanguíneo;
- - **Visualização do perfil:** o dador pode observar as suas informações pessoais e ainda terminar a sua sessão na aplicação. 
+ - **Visualização do perfil:** o dador pode observar as suas informações pessoais e ainda terminar a sua sessão na aplicação.
+
 ![image](https://github.com/user-attachments/assets/a67d5d4a-9a65-41ad-b674-83b8256f4aca)
